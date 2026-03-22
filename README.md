@@ -32,7 +32,7 @@ The system ensures that all payroll computations follow the required business ru
 | Create QA review questions            | Bryan           |
 | Conduct system testing                | Chona           |
 | Import project to GitHub repository   | Jose            |
-| Create README details                 | Bryan           |
+| Create README details                 | Bryan / Jose    |
 
 ---
 
@@ -78,6 +78,7 @@ The system performs the following operations:
    * Only working hours between **8:00 AM and 5:00 PM** are counted.
    * Extra hours beyond 5:00 PM are **not included**.
    * Government deductions are applied during the **second cutoff**.
+   * All computations follow the required payroll rules and constraints.
 
 ---
 
@@ -107,6 +108,54 @@ The system performs the following operations:
 | payroll_staff | 12345    | Process payroll           |
 
 6. Follow the menu prompts displayed in the console.
+
+---
+
+## Test Cases and Validation
+
+The system was tested using multiple scenarios to verify correctness and compliance with business rules.
+
+### Test Case 1 – Valid Employee Login
+- Displays correct employee information
+
+### Test Case 2 – Invalid Login
+- Displays error and terminates program
+
+### Test Case 3 – Payroll Staff (One Employee)
+- Displays payroll from June to December
+- Shows both cutoffs
+- Applies deductions correctly
+
+### Test Case 4 – Invalid Employee Number
+- Displays error message
+
+### Test Case 5 – Hours Worked Validation
+- 8:30–5:30 → 7.5 hours
+- 8:05–5:00 → 8.0 hours
+- 8:05–4:30 → 7.5 hours
+
+### Test Case 6 – Deduction Validation
+- Below threshold → no tax
+- Above threshold → correct tax
+
+---
+
+## Sample Output Screenshots
+
+### Invalid Login
+![Invalid Login](images/invalid_login.png)
+
+### Employee Mode – Valid Employee Lookup (ID 10004)
+![Employee Mode](images/employee_mode.png)
+
+### Payroll – One Employee with Tax Deduction (ID 10004)
+![Payroll One Employee](images/payroll_one.png)
+
+### Payroll – All Employees
+![Payroll All Employees](images/payroll_all.png)
+
+### Edge Case – No Tax Scenario (ID 10031)
+![Edge Case](images/edge_case.png)
 
 ---
 
@@ -145,9 +194,26 @@ These limitations were intentionally maintained to comply with the project guide
 
 ---
 
+## Project Monitoring and QA Review
+
+The team followed the project plan throughout development to monitor tasks, deadlines, and progress.
+
+The system underwent QA review to validate:
+- login flow
+- menu navigation
+- employee lookup
+- payroll computation
+- deductions
+- output formatting
+- input validation
+
+All identified issues were corrected before submission.
+
+---
+
 ## Project Plan
 
-A local copy of the project plan file (.xlsx) will be uploaded to this repository for offline review.
+A local copy of the project plan file (.xlsx) is included in this repository for offline review.
 
 The project plan has been completed and followed throughout the development process. The system is currently undergoing QA review and validation with a partner group before final submission.
 
