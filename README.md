@@ -222,9 +222,74 @@ Issues were resolved without changing core logic.
 
 ## Project Plan
 
+The team followed a structured project plan to manage tasks, timelines, and responsibilities throughout development. The plan includes requirement analysis, data handling, system design, development, testing, and final submission phases.
+
+All tasks were tracked with assigned owners, start and end dates, and completion status to ensure accountability and progress monitoring.
+
+A local copy of the project plan is included in the repository for verification:
+
+- docs/MO-IT101_Worksheet_Effort Estimate and Project Plan.xlsx
+
+Online reference:
 [MotorPH Project Plan](https://docs.google.com/spreadsheets/d/175Dt-jGeGFrfU_b4RWYh5RLDrJOeSHZan4qwJ6O06l4/edit?usp=sharing)
 
 ---
+
+## QA Review Results
+
+A structured QA review was conducted to validate the system’s functionality, accuracy, and compliance with project requirements. The review was performed using guided test questions and actual execution of the system.
+
+### Summary of Results
+- All core functionalities passed the QA checks
+- No major or blocking issues were identified
+- The system behaves as expected under both valid and invalid inputs
+
+### Functional Validation
+- Login works correctly using valid credentials
+- Invalid login attempts are properly handled
+- Users can successfully navigate menu options
+- Employee information is displayed correctly:
+  - Employee Number
+  - Employee Name
+  - Birthday
+- System correctly handles non-existent employee numbers
+
+### Payroll Computation Validation
+- Hours worked are correctly computed (excluding break time)
+- Payroll calculations are accurate:
+  - Gross Salary
+  - Government Deductions
+  - Net Salary
+- Government deductions are correctly applied:
+  - SSS
+  - PhilHealth
+  - Pag-IBIG
+  - Withholding Tax
+- Deductions are applied only during the second cutoff
+- Payroll data correctly covers June to December
+
+### System Quality
+- No high-severity or blocking bugs were found
+- Code runs without errors
+- Input validation works correctly for edge cases
+- Output formatting is clear and readable
+
+### Repository and Documentation Validation
+- System is properly uploaded to GitHub
+- README file is present and clearly explains the project
+- Test cases and evidence are properly documented
+
+### Team Contribution
+- All team members contributed to the project
+- Team demonstrated responsiveness during QA testing
+
+### Reviewer Notes
+> One of Group 19’s strengths is the cleanliness of their code. Additional inline comments help make the logic easier to understand.
+
+### QA Evidence
+A copy of the QA review document is included in the repository:
+
+- docs/QA Review Questions GROUP 19.xlsx
 
 ## Final Notes
 
