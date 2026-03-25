@@ -1,6 +1,7 @@
 package com.mycompany.motorph_payroll_system;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -27,70 +28,130 @@ import java.text.DecimalFormat;
  */
 public class MotorPH_Payroll_System {
 
+    /**
+     * Program entry point.
+     *
+     * @param args command-line arguments
+     */
     public static void main(String[] args) {
 
-        // File paths
         String empDetailsFile = "resources/Employee_Details.csv";
         String attendanceFile = "resources/Employee_Attendance_Record.csv";
         String sssFile = "resources/SSS_Contribution.csv";
 
-        // Formatter for money output
         DecimalFormat moneyFormat = new DecimalFormat("#,##0.00");
-
         Scanner scan = new Scanner(System.in);
 
-        // =========================
-        // LOGIN
-        // =========================
-        System.out.print("Enter username: ");
-        String username = scan.nextLine().trim();
+        showSystemHeader();
 
-        System.out.print("Enter password: ");
-        String password = scan.nextLine().trim();
+        String[] credentials = readLoginCredentials(scan);
+        String username = credentials[0];
+        String password = credentials[1];
 
-        if ((!username.equals("employee") && !username.equals("payroll_staff")) || !password.equals("12345")) {
+        if (!isValidLogin(username, password)) {
             System.out.println("Incorrect username and/or password.");
             scan.close();
             return;
         }
 
-        // =========================
-        // EMPLOYEE MENU
-        // =========================
         if (username.equals("employee")) {
-
-            System.out.println();
-            System.out.println("1. Enter your employee number");
-            System.out.println("2. Exit the program");
-            System.out.print("Choose an option: ");
-            int option = getMenuOption(scan, 1, 2);
-
-            if (option == 1) {
-                String empId = getEmployeeIdInput(scan);
-
-                String[] employee = getEmployeeData(empDetailsFile, empId);
-
-                if (employee[0] == null) {
-                    System.out.println("Employee number does not exist.");
-                } else {
-                    System.out.println();
-                    System.out.println("Employee Number: " + employee[0]);
-                    System.out.println("Employee Name: " + employee[2] + " " + employee[1]);
-                    System.out.println("Birthday: " + employee[3]);
-                }
-
-            } else if (option == 2) {
-                scan.close();
-                return;
-            }
-
-            scan.close();
-            return;
+            handleEmployeeMode(scan, empDetailsFile);
+        } else {
+            handlePayrollStaffMode(scan, empDetailsFile, attendanceFile, sssFile, moneyFormat);
         }
 
-        // =========================
-        // PAYROLL STAFF MENU
-        // =========================
+        scan.close();
+    }
+
+    /**
+     * Displays the program header.
+     */
+    public static void showSystemHeader() {
+        System.out.println("============================================");
+        System.out.println("      MotorPH Payroll Processing System");
+        System.out.println("============================================");
+    }
+
+    /**
+     * Reads login credentials from the console.
+     *
+     * @param scan the Scanner used for input
+     * @return a String array containing username and password
+     */
+    public static String[] readLoginCredentials(Scanner scan) {
+        String[] credentials = new String[2];
+
+        System.out.print("Enter username: ");
+        credentials[0] = scan.nextLine().trim();
+
+        System.out.print("Enter password: ");
+        credentials[1] = scan.nextLine().trim();
+
+        return credentials;
+    }
+
+    /**
+     * Validates login credentials.
+     *
+     * @param username the entered username
+     * @param password the entered password
+     * @return true if the credentials are valid, otherwise false
+     */
+    public static boolean isValidLogin(String username, String password) {
+        return (username.equals("employee") || username.equals("payroll_staff"))
+                && password.equals("12345");
+    }
+
+    /**
+     * Handles the employee menu flow.
+     *
+     * @param scan the Scanner used for input
+     * @param empDetailsFile the employee details CSV file path
+     */
+    public static void handleEmployeeMode(Scanner scan, String empDetailsFile) {
+
+        System.out.println();
+        System.out.println("1. Enter your employee number");
+        System.out.println("2. Exit the program");
+        System.out.print("Choose an option: ");
+        int option = getMenuOption(scan, 1, 2);
+
+        if (option == 1) {
+            String empId = getEmployeeIdInput(scan);
+            String[] employee = getEmployeeData(empDetailsFile, empId);
+
+            if (employee[0] == null) {
+                System.out.println("Employee number does not exist.");
+            } else {
+                showEmployeeDetails(employee);
+            }
+        }
+    }
+
+    /**
+     * Displays employee details.
+     *
+     * @param employee the employee record array
+     */
+    public static void showEmployeeDetails(String[] employee) {
+        System.out.println();
+        System.out.println("Employee Number: " + employee[0]);
+        System.out.println("Employee Name: " + employee[2] + " " + employee[1]);
+        System.out.println("Birthday: " + employee[3]);
+    }
+
+    /**
+     * Handles the payroll staff menu flow.
+     *
+     * @param scan the Scanner used for input
+     * @param empDetailsFile the employee details CSV file path
+     * @param attendanceFile the attendance CSV file path
+     * @param sssFile the SSS contribution CSV file path
+     * @param moneyFormat the DecimalFormat used for salary output
+     */
+    public static void handlePayrollStaffMode(Scanner scan, String empDetailsFile,
+            String attendanceFile, String sssFile, DecimalFormat moneyFormat) {
+
         System.out.println();
         System.out.println("1. Process Payroll");
         System.out.println("2. Exit the program");
@@ -98,7 +159,6 @@ public class MotorPH_Payroll_System {
         int mainOption = getMenuOption(scan, 1, 2);
 
         if (mainOption == 2) {
-            scan.close();
             return;
         }
 
@@ -110,29 +170,19 @@ public class MotorPH_Payroll_System {
         int payrollOption = getMenuOption(scan, 1, 3);
 
         if (payrollOption == 1) {
-
             String empId = getEmployeeIdInput(scan);
-
             String[] employee = getEmployeeData(empDetailsFile, empId);
 
             if (employee[0] == null) {
                 System.out.println("Employee number does not exist.");
-                scan.close();
                 return;
             }
 
             processOneEmployeePayroll(attendanceFile, sssFile, employee, moneyFormat);
 
         } else if (payrollOption == 2) {
-
             processAllEmployeesPayroll(empDetailsFile, attendanceFile, sssFile, moneyFormat);
-
-        } else if (payrollOption == 3) {
-            scan.close();
-            return;
         }
-
-        scan.close();
     }
 
     /**
@@ -185,7 +235,6 @@ public class MotorPH_Payroll_System {
      * @param sssFile the SSS contribution CSV file path
      * @param employee the employee record array
      * @param moneyFormat the DecimalFormat used for salary output
-     * @return nothing
      */
     public static void processOneEmployeePayroll(String attendanceFile, String sssFile, String[] employee, DecimalFormat moneyFormat) {
 
@@ -272,7 +321,6 @@ public class MotorPH_Payroll_System {
      * @param attendanceFile the attendance CSV file path
      * @param sssFile the SSS contribution CSV file path
      * @param moneyFormat the DecimalFormat used for salary output
-     * @return nothing
      */
     public static void processAllEmployeesPayroll(String empDetailsFile, String attendanceFile, String sssFile, DecimalFormat moneyFormat) {
 
@@ -350,8 +398,8 @@ public class MotorPH_Payroll_System {
      *
      * @param attendanceFile the attendance CSV file path
      * @param empId the employee number
-     * @param firstCutoffMinutes array storing total minutes for days 1–15
-     * @param secondCutoffMinutes array storing total minutes for days 16–end of month
+     * @param firstCutoffMinutes array storing total minutes for days 1-15
+     * @param secondCutoffMinutes array storing total minutes for days 16-end of month
      * @return true if attendance records were found, otherwise false
      */
     public static boolean loadAttendanceForEmployee(String attendanceFile, String empId, int[] firstCutoffMinutes, int[] secondCutoffMinutes) {
@@ -487,10 +535,9 @@ public class MotorPH_Payroll_System {
      */
     public static String[] parseCSVLine(String line) {
 
-        String[] tempFields = new String[30];
-        String currentField = "";
+        ArrayList<String> fields = new ArrayList<String>();
+        StringBuilder currentField = new StringBuilder();
         boolean inQuotes = false;
-        int fieldCount = 0;
 
         for (int i = 0; i < line.length(); i++) {
             char currentChar = line.charAt(i);
@@ -498,20 +545,18 @@ public class MotorPH_Payroll_System {
             if (currentChar == '"') {
                 inQuotes = !inQuotes;
             } else if (currentChar == ',' && !inQuotes) {
-                tempFields[fieldCount] = currentField.trim();
-                fieldCount++;
-                currentField = "";
+                fields.add(currentField.toString().trim());
+                currentField.setLength(0);
             } else {
-                currentField += currentChar;
+                currentField.append(currentChar);
             }
         }
 
-        tempFields[fieldCount] = currentField.trim();
-        fieldCount++;
+        fields.add(currentField.toString().trim());
 
-        String[] finalFields = new String[fieldCount];
-        for (int i = 0; i < fieldCount; i++) {
-            finalFields[i] = tempFields[i];
+        String[] finalFields = new String[fields.size()];
+        for (int i = 0; i < fields.size(); i++) {
+            finalFields[i] = fields.get(i);
         }
 
         return finalFields;
@@ -633,7 +678,7 @@ public class MotorPH_Payroll_System {
     /**
      * Computes withholding tax based on taxable income.
      *
-     * @param taxableIncome the employee's taxable income after mandatory deductions
+     * @param taxableIncome the taxable income after mandatory deductions
      * @return the withholding tax amount
      */
     public static double computeWithholdingTax(double taxableIncome) {
